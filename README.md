@@ -32,42 +32,25 @@ Use:
         
     Sample usage:
     
-        Interface Builder:
-
-        APNFlexKeyPad
-        ┌─────────────────────────┐
-        │    UIView     UIView    │
-        │   ┌──────┐   ┌──────┐   │
-        │   │tag:1 │   │tag:2 │   │
-        │   └──────┘   └──────┘   │
-        │    UIView     UIView    │
-        │   ┌──────┐   ┌──────┐   │
-        │   │tag:12│   │tag:29│   │
-        │   └──────┘   └──────┘   │
-        │         UIView          │
-        │        ┌──────┐         │
-        │        │tag:56│         │
-        │        └──────┘         │
-        │                         │
-        └─────────────────────────┘
-
-        Rendered Output
-        ┌─────────────────────────┐ 
-        │    Button     Button    │
-        │   ┌──────┐   ┌──────┐   │
-        │   │   1  │   │   0  │   │
-        │   └──────┘   └──────┘   │
-        │    Button     Button    │
-        │   ┌──────┐   ┌──────┐   │
-        │   │ Back │   │Reset │   │
-        │   └──────┘   └──────┘   │
-        │         Button          │
-        │        ┌──────┐         │
-        │        │  =)  │         │
-        │        └──────┘         │
-        │                         │
-        └─────────────────────────┘
-
+             Interface Builder                                Device
+             
+             APNFlexKeyPad                                    
+        ┌─────────────────────────┐                     ┌─────────────────────────┐
+        │    UIView     UIView    │                     │    Button     Button    │
+        │   ┌──────┐   ┌──────┐   │                     │   ┌──────┐   ┌──────┐   │
+        │   │tag:1 │   │tag:2 │   │                     │   │   1  │   │   0  │   │
+        │   └──────┘   └──────┘   │                     │   └──────┘   └──────┘   │
+        │    UIView     UIView    │                     │    Button     Button    │
+        │   ┌──────┐   ┌──────┐   │     --Output-->     │   ┌──────┐   ┌──────┐   │
+        │   │tag:12│   │tag:29│   │                     │   │ Back │   │Reset │   │
+        │   └──────┘   └──────┘   │                     │   └──────┘   └──────┘   │
+        │         UIView          │                     │         Button          │
+        │        ┌──────┐         │                     │        ┌──────┐         │
+        │        │tag:56│         │                     │        │  =)  │         │
+        │        └──────┘         │                     │        └──────┘         │
+        │                         │                     │                         │
+        └─────────────────────────┘                     └─────────────────────────┘
+        
         Code:
         
         import APNFlexKeypad
@@ -79,9 +62,9 @@ Use:
             func viewDidLoad() {
             
             flexPad.build(withConfigs: APNFlexKeypadConfigs(delegate: self,
-                                                               keys: [ 1: ("1", .accumulator)
-                                                                       , 2: ("0", .accumulatorZero)
-                                                                       , 12: ("Back", .accumulatorBackspace)
+                                                               keys: [ 1: ("1", "1", .accumulator)
+                                                                       , 2: ("0", "0,", .accumulatorZero)
+                                                                       , 12: ("Back", "", .accumulatorBackspace)
                                                                        , 29: ("Reset", .accumulatorReset)
                                                                        , 56: ("=)", .custom( { self.customFunc() }))
                                                                      ]),

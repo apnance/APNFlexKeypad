@@ -7,24 +7,57 @@
 
 import UIKit
 
+public typealias KeyDefinition = (title: String, function: APNFlexKeypadButton.ButtonFunction)
+
 public class APNFlexKeypadButton: UIButton {
     
-    public enum ButtonFunction { case accumulator, accumulatorZero, accumulatorReset,
-                                      accumulatorBackspace, custom(() -> Void) }
+    public enum ButtonFunction {
+        
+        case accumulator(String), accumulatorPost(String), accumulatorReset,
+             accumulatorBackspace, custom(() -> Void)
+        
+        /// Returns the associated String value of `.accumulator` or `.accumulatorPost`
+        func accValue() -> String? {
+            switch self {
+                    
+                case .accumulator(let acc): return acc
+                    
+                case .accumulatorPost(let acc): return acc
+                    
+                default: return nil /*NIL*/
+                    
+            }
+        }
+        
+    }
     
     var function: ButtonFunction!
     var positionedFrame: CGRect!
     
-    init(frame:CGRect, function: ButtonFunction) {
+    private(set) var backingValue = ""
+    
+    init(frame:CGRect, key: KeyDefinition) {
         
         super.init(frame: frame)
         
+        if let image = UIImage(named: key.title) {
+            
+            self.setImage(image, for: .normal)
+            
+        } else {
+            
+            setTitle(key.title, for: .normal)
+            
+        }
+        
         positionedFrame     = frame
-        self.function       = function
+        function            = key.function
         let minDim          = min(frame.width, frame.height)
         
         layer.cornerRadius  = minDim / 2.0
-        backgroundColor     = .red
+        backgroundColor     = .blue
+        
+        backingValue        = function.accValue() ?? backingValue
         
         titleLabel?.adjustsFontSizeToFitWidth = true
         titleLabel?.minimumScaleFactor = 0.001
@@ -35,28 +68,28 @@ public class APNFlexKeypadButton: UIButton {
     
 }
 
-// TODO: Clean Up - APNTaggedView needs to be moved to the project referencing the APNFlexKeypad package.
-@IBDesignable public class APNTaggedView: UIView {
-    
-    public override func prepareForInterfaceBuilder() {
-        
-        super.prepareForInterfaceBuilder()
-        
-        let label                       = UILabel(frame: bounds)
-        label.text                      = tag.description
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor        = 0.1
-        label.textAlignment             = .center
-        label.textColor                 = .white
-        
-        backgroundColor = .red
-        
-        layer.cornerRadius = frame.width / 2.0
-        
-        clipsToBounds = true
-        
-        addSubview(label)
-        
-    }
-    
-}
+/// Renders the UIView's tag value inside itself in Interface Builder.  Useful as placholder views for flexpad buttons.
+//@IBDesignable public class TaggedView: UIView {
+//    
+//    public override func prepareForInterfaceBuilder() {
+//        
+//        super.prepareForInterfaceBuilder()
+//        
+//        let label                       = UILabel(frame: bounds)
+//        label.text                      = tag.description
+//        label.adjustsFontSizeToFitWidth = true
+//        label.minimumScaleFactor        = 0.1
+//        label.textAlignment             = .center
+//        label.textColor                 = .white
+//        
+//        backgroundColor = .red
+//        
+//        layer.cornerRadius = frame.width / 2.0
+//        
+//        clipsToBounds = true
+//        
+//        addSubview(label)
+//        
+//    }
+//    
+//}

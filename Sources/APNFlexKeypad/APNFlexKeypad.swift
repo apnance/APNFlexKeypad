@@ -16,7 +16,7 @@ public class APNFlexKeypad: UIView {
     private var keyButtons = [APNFlexKeypadButton]()
     
     /// Call `build(withConfigs:)` in viewDidLoad of containing `UIViewController`
-    public func build(withConfigs configs: APNFlexKeypadConfigs, completion: (() -> ())? = nil) {
+    public func build(withConfigs configs: APNFlexKeypadConfigs) {
         
         validate(configs)
         
@@ -30,21 +30,17 @@ public class APNFlexKeypad: UIView {
                 let key     = configs.keyDefinitions[view.tag]!
                 
                 let button  = APNFlexKeypadButton(frame: view.frame,
-                                                 function: key.function)
+                                                  key: key)
                 
-                button.setTitle(key.title, for: .normal)
                 button.addTarget(self, action: #selector(keyPress(sender:)), for: .touchUpInside)
                 
                 view.removeFromSuperview()
-                
                 addSubview(button)
                 keyButtons.append(button)
                 
             }
             
         }
-        
-        completion?()
         
     }
     
@@ -108,7 +104,7 @@ public class APNFlexKeypad: UIView {
     /// - Parameter sender: reference to the `APNFlexKeypadButton` pressed.
     @objc private func keyPress(sender: APNFlexKeypadButton) {
         
-        let title = sender.title(for: .normal)!
+        let backingValue = sender.backingValue
         
         switch sender.function {
                 
@@ -116,9 +112,9 @@ public class APNFlexKeypad: UIView {
                 
             case .accumulatorBackspace: value = String(value.dropLast(1)) /*EXIT*/
                 
-            case .accumulatorZero:      value += value.count > 0 ? title : ""
+            case .accumulatorPost:      value += value.count > 0 ? backingValue : ""
                 
-            case .accumulator:          value += title
+            case .accumulator:          value += backingValue
                 
             case let .custom(function): function()
             
@@ -130,26 +126,41 @@ public class APNFlexKeypad: UIView {
         
     }
     
-    public func showHide() {
+    public func showHide(animated: Bool = false) {
         
         let centered = CGRect(x: frame.width / 2.0, y: frame.height / 2.0,
                               width:0, height:0)
-            
-        UIView.animate(withDuration: 0.4) {
-            
-            for button in self.keyButtons {
+        
+        delegate?.showHideBegin(isShown: isShown)
+        
+        if animated {
+            UIView.animate(withDuration: 0.2) {
                 
-                button.frame = self.isShown ? centered : button.positionedFrame!
+                for button in self.keyButtons {
+                    
+                    button.frame = self.isShown ? centered : button.positionedFrame!
+                    
+                }
+                
+            } completion: { success in
+                
+                self.isShown = !self.isShown
+                self.delegate?.showHideComplete(isShown: self.isShown)
                 
             }
             
-        } completion: { success in
+        } else {
             
-            self.delegate?.showHideComplete(isShown: self.isShown)
+            for button in keyButtons {
+                    
+                    button.frame = isShown ? centered : button.positionedFrame!
+                
+            }
+
+            isShown = !isShown
+            delegate?.showHideComplete(isShown: self.isShown)
             
         }
-        
-        isShown = !isShown
         
     }
     
@@ -159,6 +170,7 @@ public protocol APNFlexKeypadDelegate : AnyObject {
     
     func valueChanged(_: String?)
     func showHideComplete(isShown: Bool)
+    func showHideBegin(isShown: Bool)
     
 }
 
@@ -166,11 +178,12 @@ public struct APNFlexKeypadConfigs {
     
     private(set) var keyDefinitions: [ Int: (title: String,
                                              function: APNFlexKeypadButton.ButtonFunction)]
+    
     weak private(set) var delegate: APNFlexKeypadDelegate?
     
     public init(delegate: APNFlexKeypadDelegate,
-                keys: [ Int: (title: String, function: APNFlexKeypadButton.ButtonFunction)]) {
-        
+                keys: [ Int: KeyDefinition ]) {
+    
         self.delegate       = delegate
         self.keyDefinitions = keys
         
