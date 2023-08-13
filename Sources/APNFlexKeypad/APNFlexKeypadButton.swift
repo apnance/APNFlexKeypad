@@ -7,7 +7,10 @@
 
 import UIKit
 
-public typealias KeyDefinition = (title: String, function: APNFlexKeypadButton.ButtonFunction)
+public typealias KeyDefinition = (title: String,
+                                  function: APNFlexKeypadButton.ButtonFunction,
+                                  textColor: UIColor,
+                                  backgroundColor: UIColor)
 
 public class APNFlexKeypadButton: UIButton {
     
@@ -52,15 +55,15 @@ public class APNFlexKeypadButton: UIButton {
         
         positionedFrame     = frame
         function            = key.function
-        let minDim          = min(frame.width, frame.height)
-        
-        layer.cornerRadius  = minDim / 2.0
-        backgroundColor     = .blue
-        
         backingValue        = function.accValue() ?? backingValue
         
-        titleLabel?.adjustsFontSizeToFitWidth = true
+        layer.cornerRadius  = min(frame.width, frame.height) / 2.0
+        
+        titleLabel?.font = UIFont(name: "Futura-Bold", size: 20.0)
         titleLabel?.minimumScaleFactor = 0.001
+        titleLabel?.adjustsFontSizeToFitWidth = true
+        setTitleColor(.systemBlue, for: .normal)
+        backgroundColor     = .white
         
     }
     

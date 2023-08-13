@@ -33,6 +33,8 @@ public class APNFlexKeypad: UIView {
                                                   key: key)
                 
                 button.addTarget(self, action: #selector(keyPress(sender:)), for: .touchUpInside)
+                button.setTitleColor(key.textColor, for: .normal)
+                button.backgroundColor = key.backgroundColor
                 
                 view.removeFromSuperview()
                 addSubview(button)
@@ -176,13 +178,12 @@ public protocol APNFlexKeypadDelegate : AnyObject {
 
 public struct APNFlexKeypadConfigs {
     
-    private(set) var keyDefinitions: [ Int: (title: String,
-                                             function: APNFlexKeypadButton.ButtonFunction)]
+    private(set) var keyDefinitions: [ Int: KeyDefinition]
     
     weak private(set) var delegate: APNFlexKeypadDelegate?
     
     public init(delegate: APNFlexKeypadDelegate,
-                keys: [ Int: KeyDefinition ]) {
+                keys: [ Int : KeyDefinition ]) {
     
         self.delegate       = delegate
         self.keyDefinitions = keys
