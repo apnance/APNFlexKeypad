@@ -70,29 +70,3 @@ public class APNFlexKeypadButton: UIButton {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
 }
-
-/// Renders the UIView's tag value inside itself in Interface Builder.  Useful as placholder views for flexpad buttons.
-//@IBDesignable public class TaggedView: UIView {
-//    
-//    public override func prepareForInterfaceBuilder() {
-//        
-//        super.prepareForInterfaceBuilder()
-//        
-//        let label                       = UILabel(frame: bounds)
-//        label.text                      = tag.description
-//        label.adjustsFontSizeToFitWidth = true
-//        label.minimumScaleFactor        = 0.1
-//        label.textAlignment             = .center
-//        label.textColor                 = .white
-//        
-//        backgroundColor = .red
-//        
-//        layer.cornerRadius = frame.width / 2.0
-//        
-//        clipsToBounds = true
-//        
-//        addSubview(label)
-//        
-//    }
-//    
-//}
