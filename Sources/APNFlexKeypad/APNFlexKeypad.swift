@@ -118,6 +118,8 @@ public class APNFlexKeypad: UIView {
                 
             case .accumulator:          value += backingValue
                 
+            case .singleValue:          value = backingValue
+                
             case let .custom(function): function()
             
             case .none: break /*BREAK*/

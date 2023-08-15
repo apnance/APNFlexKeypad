@@ -17,7 +17,7 @@ public class APNFlexKeypadButton: UIButton {
     public enum ButtonFunction {
         
         case accumulator(String), accumulatorPost(String), accumulatorReset,
-             accumulatorBackspace, custom(() -> Void)
+             accumulatorBackspace, singleValue(String), custom(() -> Void)
         
         /// Returns the associated String value of `.accumulator` or `.accumulatorPost`
         func accValue() -> String? {
@@ -26,6 +26,8 @@ public class APNFlexKeypadButton: UIButton {
                 case .accumulator(let acc): return acc
                     
                 case .accumulatorPost(let acc): return acc
+                    
+                case .singleValue(let val): return val
                     
                 default: return nil /*NIL*/
                     
