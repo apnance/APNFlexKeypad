@@ -12,7 +12,7 @@ public class APNFlexKeypad: UIView {
     // MARK: - Setup
     public private(set) var value = ""
     weak private var delegate: APNFlexKeypadDelegate?
-    private var isShown = true
+    public private(set) var isShown = true
     private var keyButtons = [APNFlexKeypadButton]()
     
     /// Call `build(withConfigs:)` in viewDidLoad of containing `UIViewController`
@@ -130,26 +130,28 @@ public class APNFlexKeypad: UIView {
         
     }
     
-    public func showHide(animated: Bool = false) {
+    public func show(_ shouldShow: Bool, animated: Bool = false) {
         
         let centered = CGRect(x: frame.width / 2.0, y: frame.height / 2.0,
                               width:0, height:0)
         
-        delegate?.showHideBegin(isShown: isShown)
+        isShown = shouldShow
+        
+        delegate?.showHideBegin(isShown: shouldShow)
         
         if animated {
+            
             UIView.animate(withDuration: 0.2) {
                 
                 for button in self.keyButtons {
                     
-                    button.frame = self.isShown ? centered : button.positionedFrame!
+                    button.frame = !shouldShow ? centered : button.positionedFrame!
                     
                 }
                 
             } completion: { success in
                 
-                self.isShown = !self.isShown
-                self.delegate?.showHideComplete(isShown: self.isShown)
+                self.delegate?.showHideComplete(isShown: shouldShow)
                 
             }
             
@@ -157,15 +159,53 @@ public class APNFlexKeypad: UIView {
             
             for button in keyButtons {
                     
-                    button.frame = isShown ? centered : button.positionedFrame!
+                    button.frame = !shouldShow ? centered : button.positionedFrame!
                 
             }
-
-            isShown = !isShown
-            delegate?.showHideComplete(isShown: self.isShown)
+            
+            isShown = shouldShow
+            delegate?.showHideComplete(isShown: shouldShow)
             
         }
         
+// TODO: Clean Up - delete
+//          public func showHide(animated: Bool = false) {
+//
+//        let centered = CGRect(x: frame.width / 2.0, y: frame.height / 2.0,
+//                              width:0, height:0)
+//
+//        delegate?.showHideBegin(isShown: isShown)
+//
+//        if animated {
+//
+//            UIView.animate(withDuration: 0.2) {
+//
+//                for button in self.keyButtons {
+//
+//                    button.frame = self.isShown ? centered : button.positionedFrame!
+//
+//                }
+//
+//            } completion: { success in
+//
+//                self.isShown = !self.isShown
+//                self.delegate?.showHideComplete(isShown: self.isShown)
+//
+//            }
+//
+//        } else {
+//
+//            for button in keyButtons {
+//
+//                    button.frame = isShown ? centered : button.positionedFrame!
+//
+//            }
+//
+//            isShown = !isShown
+//            delegate?.showHideComplete(isShown: self.isShown)
+//
+//        }
+//
     }
     
 }
