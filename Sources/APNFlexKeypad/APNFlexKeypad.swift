@@ -10,15 +10,22 @@ import UIKit
 public class APNFlexKeypad: UIView {
 
     // MARK: - Setup
-    public private(set) var value = ""
     weak private var delegate: APNFlexKeypadDelegate?
+    public private(set) var id      = "Unspecified"
+    public private(set) var value   = ""
     public private(set) var isShown = true
     private var keyButtons = [APNFlexKeypadButton]()
     
     /// Call `build(withConfigs:)` in viewDidLoad of containing `UIViewController`
-    public func build(withConfigs configs: APNFlexKeypadConfigs) {
+    /// - Parameters:
+    ///   - configs: `APNFlexKeypadConfig` object that specifies how to build each key in the keypad.
+    ///   - buttonStyler: `(UIView) -> ()` closure to call on each button for styling purposes
+    public func build(withConfigs configs: APNFlexKeypadConfigs,
+                      buttonStyler: ((UIView) -> ())? = nil) {
         
         validate(configs)
+        
+        id = configs.id
         
         delegate = configs.delegate
         let subs = subviews
@@ -36,6 +43,8 @@ public class APNFlexKeypad: UIView {
                 button.setTitleColor(key.textColor, for: .normal)
                 button.backgroundColor = key.backgroundColor
                 
+                buttonStyler?(button)
+                
                 view.removeFromSuperview()
                 addSubview(button)
                 keyButtons.append(button)
@@ -46,6 +55,9 @@ public class APNFlexKeypad: UIView {
         
     }
     
+    
+    /// Reconciles tags that should have buttons against button definitions in configs.
+    /// - Parameter configs: config object controlling rendered button properties.
     private func validate(_ configs: APNFlexKeypadConfigs) {
         
         var seq1    = Set<Int>(configs.keyDefinitions.keys)
@@ -97,7 +109,7 @@ public class APNFlexKeypad: UIView {
         
     }
     
-    // MARK: - Interact
+    // MARK: - Interaction
     /// Accessor function for `value`
     /// - Parameter value: new `String` value for `value` property.
     public func set(value: String) { self.value = value }
@@ -126,32 +138,42 @@ public class APNFlexKeypad: UIView {
                 
         }
         
-        delegate?.valueChanged(value)
+        delegate?.valueChanged(value, forID: id)
         
     }
     
+    
+    /// Shows or hides flexpad with or without animation.
+    /// - Parameters:
+    ///   - shouldShow: flag specifying whether to show or hide control.
+    ///   - animated: flag determining whether control is shown/hidden with animtion.
     public func show(_ shouldShow: Bool, animated: Bool = false) {
         
-        let centered = CGRect(x: frame.width / 2.0, y: frame.height / 2.0,
-                              width:0, height:0)
-        
         isShown = shouldShow
-        
-        delegate?.showHideBegin(isShown: shouldShow)
+        delegate?.showHideBegin(forID: id, isShown: shouldShow)
         
         if animated {
             
-            UIView.animate(withDuration: 0.2) {
+            // TODO: Clean Up - remove or tweeak unused bifurcated duration.
+            UIView.animate(withDuration: (shouldShow
+                                          ? APNFlexKeypadConfigs.Defaults.UI.Animation.showDuration
+                                          : APNFlexKeypadConfigs.Defaults.UI.Animation.showDuration)) {
+                
+                self.alpha = shouldShow ? 1.0 : 0.0
                 
                 for button in self.keyButtons {
                     
-                    button.frame = !shouldShow ? centered : button.positionedFrame!
+                    let centered = CGPoint(x: (self.frame.width / 2.0)  - (button.frame.width / 2.0),
+                                           y: (self.frame.height / 2.0) - (button.frame.height / 2.0))
+                    
+                    button.frame = !shouldShow ? CGRect(origin: centered, size: button.positionedFrame.size) : button.positionedFrame!
+                    button.alpha = shouldShow ? 1.0 : 0.0
                     
                 }
                 
             } completion: { success in
                 
-                self.delegate?.showHideComplete(isShown: shouldShow)
+                self.delegate?.showHideComplete(forID: self.id, isShown: shouldShow, animated: true)
                 
             }
             
@@ -159,78 +181,44 @@ public class APNFlexKeypad: UIView {
             
             for button in keyButtons {
                     
-                    button.frame = !shouldShow ? centered : button.positionedFrame!
+                let centered = CGPoint(x: (frame.width / 2.0)  - (button.frame.width / 2.0),
+                                       y: (frame.height / 2.0) - (button.frame.height / 2.0))
+                
+                button.frame = !shouldShow ? CGRect(origin: centered, size: button.positionedFrame.size) : button.positionedFrame!
+                button.alpha = shouldShow ? 1.0 : 0.0
                 
             }
             
-            isShown = shouldShow
-            delegate?.showHideComplete(isShown: shouldShow)
+            alpha   = isShown ? 1.0 : 0.0
+            delegate?.showHideComplete(forID: id, isShown: shouldShow, animated: false)
             
         }
         
-// TODO: Clean Up - delete
-//          public func showHide(animated: Bool = false) {
-//
-//        let centered = CGRect(x: frame.width / 2.0, y: frame.height / 2.0,
-//                              width:0, height:0)
-//
-//        delegate?.showHideBegin(isShown: isShown)
-//
-//        if animated {
-//
-//            UIView.animate(withDuration: 0.2) {
-//
-//                for button in self.keyButtons {
-//
-//                    button.frame = self.isShown ? centered : button.positionedFrame!
-//
-//                }
-//
-//            } completion: { success in
-//
-//                self.isShown = !self.isShown
-//                self.delegate?.showHideComplete(isShown: self.isShown)
-//
-//            }
-//
-//        } else {
-//
-//            for button in keyButtons {
-//
-//                    button.frame = isShown ? centered : button.positionedFrame!
-//
-//            }
-//
-//            isShown = !isShown
-//            delegate?.showHideComplete(isShown: self.isShown)
-//
-//        }
-//
     }
     
 }
 
+/// Delegate
 public protocol APNFlexKeypadDelegate : AnyObject {
     
-    func valueChanged(_: String?)
-    func showHideComplete(isShown: Bool)
-    func showHideBegin(isShown: Bool)
+    /// Method called on delegate when the flexpad's underlying value changes.
+    /// - Parameters:
+    ///   - _: new `String` value of underlying `value` property.
+    ///   - forID: id of the flexpad calling this method. Useful if flexpad's delegate has two or more flexpads.
+    func valueChanged(_: String?, forID: String)
     
-}
-
-public struct APNFlexKeypadConfigs {
+    /// Called before the flexpad begins to show or hide itself.
+    /// - Parameters:
+    ///   - forID: id of the flexpad calling this method. Useful if flexpad's delegate has two or more flexpads.
+    ///   - isShown: flag indicating whether the flexpad is being shown(true) or hidden(false).
+    func showHideBegin(forID: String, isShown: Bool)
     
-    private(set) var keyDefinitions: [ Int: KeyDefinition]
-    
-    weak private(set) var delegate: APNFlexKeypadDelegate?
-    
-    public init(delegate: APNFlexKeypadDelegate,
-                keys: [ Int : KeyDefinition ]) {
-    
-        self.delegate       = delegate
-        self.keyDefinitions = keys
-        
-    }
+    /// Called after flexpad has finished showing/hiding  itself.
+    /// - Parameters:
+    ///   - forID: id of the flexpad calling this method. Useful if flexpad's delegate has two or more flexpads.
+    ///   - isShown: flag indicating whether the flexpad was shown(true) or hidden(false).
+    ///   - animated: flag indicating if the control was shown/hidden in an animated fashion.
+    func showHideComplete(forID: String, isShown: Bool, animated: Bool)
     
 }
 
