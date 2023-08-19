@@ -157,7 +157,7 @@ public class APNFlexKeypad: UIView {
             // TODO: Clean Up - remove or tweeak unused bifurcated duration.
             UIView.animate(withDuration: (shouldShow
                                           ? APNFlexKeypadConfigs.Defaults.UI.Animation.showDuration
-                                          : APNFlexKeypadConfigs.Defaults.UI.Animation.showDuration)) {
+                                          : APNFlexKeypadConfigs.Defaults.UI.Animation.hideDuration)) {
                 
                 self.alpha = shouldShow ? 1.0 : 0.0
                 
