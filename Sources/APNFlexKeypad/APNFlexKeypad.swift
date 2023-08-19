@@ -154,7 +154,6 @@ public class APNFlexKeypad: UIView {
         
         if animated {
             
-            // TODO: Clean Up - remove or tweeak unused bifurcated duration.
             UIView.animate(withDuration: (shouldShow
                                           ? APNFlexKeypadConfigs.Defaults.UI.Animation.showDuration
                                           : APNFlexKeypadConfigs.Defaults.UI.Animation.hideDuration)) {
@@ -180,7 +179,7 @@ public class APNFlexKeypad: UIView {
         } else {
             
             for button in keyButtons {
-                    
+                
                 let centered = CGPoint(x: (frame.width / 2.0)  - (button.frame.width / 2.0),
                                        y: (frame.height / 2.0) - (button.frame.height / 2.0))
                 

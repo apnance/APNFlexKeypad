@@ -48,7 +48,7 @@ public struct APNFlexKeypadConfigs {
             struct Animation {
                 
                 static let showDuration = 0.3
-                static let hideDuration = 0.3
+                static let hideDuration = 0.25
                 
             }
             
