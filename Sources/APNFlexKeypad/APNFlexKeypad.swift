@@ -143,6 +143,15 @@ public class APNFlexKeypad: UIView {
     }
     
     
+    /// Shows or hides just the buttons of the keypad.
+    public func hideButtons(_ shouldHide: Bool) {
+        
+        for button in keyButtons {
+            button.isHidden = shouldHide
+        }
+        
+    }
+    
     /// Shows or hides flexpad with or without animation.
     /// - Parameters:
     ///   - shouldShow: flag specifying whether to show or hide control.
