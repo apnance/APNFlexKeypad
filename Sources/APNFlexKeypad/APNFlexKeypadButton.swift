@@ -10,7 +10,8 @@ import UIKit
 public typealias KeyDefinition = (title: String,
                                   function: APNFlexKeypadButton.ButtonFunction,
                                   textColor: UIColor,
-                                  backgroundColor: UIColor)
+                                  backgroundColor: UIColor,
+                                  hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?)
 
 public class APNFlexKeypadButton: UIButton {
     
@@ -38,6 +39,7 @@ public class APNFlexKeypadButton: UIButton {
     
     var function: ButtonFunction!
     var positionedFrame: CGRect!
+    var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?
     
     private(set) var backingValue = ""
     
@@ -58,6 +60,7 @@ public class APNFlexKeypadButton: UIButton {
         positionedFrame     = frame
         function            = key.function
         backingValue        = function.accValue() ?? backingValue
+        hapticStyle         = key.hapticStyle
         
         layer.cornerRadius  = min(frame.width, frame.height) / 2.0
         

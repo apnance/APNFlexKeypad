@@ -138,6 +138,8 @@ public class APNFlexKeypad: UIView {
                 
         }
         
+        haptic(for: sender)
+        
         delegate?.valueChanged(value, forID: id)
         
     }
@@ -199,6 +201,15 @@ public class APNFlexKeypad: UIView {
             
         }
         
+    }
+    
+    /// Triggers a haptic response with default style of .light
+    /// - note: This is captured version of APNUTils.Globals.haptic()
+    private func haptic(for button: APNFlexKeypadButton) {
+        
+        if let hapticStyle = button.hapticStyle {
+            UIImpactFeedbackGenerator(style: hapticStyle).impactOccurred()
+        }
     }
     
 }
