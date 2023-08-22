@@ -8,7 +8,7 @@
 import UIKit
 
 public class APNFlexKeypad: UIView {
-
+    
     // MARK: - Setup
     weak private var delegate: APNFlexKeypadDelegate?
     public private(set) var id      = "Unspecified"
@@ -76,7 +76,7 @@ public class APNFlexKeypad: UIView {
         }
         
         assert(!seq1.contains(0),
-               """
+                """
                 configs \(d1.dropLast()) values must be > 0, tags <= 0 are \
                 reserved for other subviews that you do not want to be replaced \
                 with keys.
@@ -96,7 +96,7 @@ public class APNFlexKeypad: UIView {
                 }
                 
                 assert(missingKeys.count == 0,
-                       """
+                        """
                         \(d1) \(missingKeys.sorted().description.dropLast().dropFirst())
                         have no matching \(d2) thus would not appear in FlexKeypad.
                         """)
@@ -133,7 +133,7 @@ public class APNFlexKeypad: UIView {
             case .singleValue:          value = backingValue
                 
             case let .custom(function): function()
-            
+                
             case .none: break /*BREAK*/
                 
         }
@@ -142,13 +142,10 @@ public class APNFlexKeypad: UIView {
         
     }
     
-    
     /// Shows or hides just the buttons of the keypad.
     public func hideButtons(_ shouldHide: Bool) {
         
-        for button in keyButtons {
-            button.isHidden = shouldHide
-        }
+        keyButtons.forEach { $0.isHidden = shouldHide }
         
     }
     
@@ -229,4 +226,3 @@ public protocol APNFlexKeypadDelegate : AnyObject {
     func showHideComplete(forID: String, isShown: Bool, animated: Bool)
     
 }
-
