@@ -15,31 +15,41 @@ public typealias KeyDefinition = (title: String,
 
 public class APNFlexKeypadButton: UIButton {
     
+    /// Enum specifying the purpose and therefore behavior of an APNFlexKeypadButton.
+    /// ```
+    /// .singleValue            // overwrites any stored or accumulated or previous singleValue.
+    /// .accumulator            // button's cause their values to accumulate or be concatentated.
+    /// .accumulatorPost        // buttons are a subset of accumulators that only accumulate their value if there is an existing value.
+    /// .accumulatorReset       // buttons clear all accumulated or singleValue values.
+    /// .accumulatorBackspace   // removes the last accumulated character.
+    /// .custom                 // buttons take a () -> () closure to be called when the button is tapped.
+    /// ```
     public enum ButtonFunction {
         
-        case accumulator(String), accumulatorPost(String), accumulatorReset,
-             accumulatorBackspace, singleValue(String), custom(() -> Void)
+        case singleValue(String), accumulator(String), accumulatorPost(String), accumulatorReset,
+             accumulatorBackspace, custom(() -> Void)
         
         /// Returns the associated String value of `.accumulator` or `.accumulatorPost`
         func accValue() -> String? {
             switch self {
                     
-                case .accumulator(let acc): return acc
+                case .accumulator(let acc):     return acc
                     
                 case .accumulatorPost(let acc): return acc
                     
-                case .singleValue(let val): return val
+                case .singleValue(let val):     return val
                     
-                default: return nil /*NIL*/
+                default:                        return nil /*NIL*/
                     
             }
+            
         }
         
     }
     
-    var function: ButtonFunction!
-    var positionedFrame: CGRect!
-    var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?
+    private(set) var function: ButtonFunction!
+    private(set) var positionedFrame: CGRect!
+    private(set) var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?
     
     private(set) var backingValue = ""
     
