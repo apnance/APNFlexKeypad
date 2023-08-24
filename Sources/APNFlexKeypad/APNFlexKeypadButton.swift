@@ -10,7 +10,8 @@ import UIKit
 public typealias KeyDefinition = (title: String,
                                   function: APNFlexKeypadButton.ButtonFunction,
                                   textColor: UIColor,
-                                  backgroundColor: UIColor,
+                                  normalBgColor: UIColor,
+                                  hightlightBgColor: UIColor,
                                   hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?)
 
 public class APNFlexKeypadButton: UIButton {
@@ -50,7 +51,7 @@ public class APNFlexKeypadButton: UIButton {
     private(set) var function: ButtonFunction!
     private(set) var positionedFrame: CGRect!
     private(set) var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?
-    
+    private(set) var bgColors:(normal:UIColor, highlighted:UIColor) = (.red, .green)
     private(set) var backingValue = ""
     
     init(frame:CGRect, key: KeyDefinition) {
@@ -71,6 +72,7 @@ public class APNFlexKeypadButton: UIButton {
         function            = key.function
         backingValue        = function.accValue() ?? backingValue
         hapticStyle         = key.hapticStyle
+        bgColors            = (key.normalBgColor, key.hightlightBgColor)
         
         layer.cornerRadius  = min(frame.width, frame.height) / 2.0
         
@@ -78,7 +80,19 @@ public class APNFlexKeypadButton: UIButton {
         titleLabel?.minimumScaleFactor = 0.001
         titleLabel?.adjustsFontSizeToFitWidth = true
         setTitleColor(.systemBlue, for: .normal)
-        backgroundColor     = .white
+        backgroundColor     = bgColors.normal
+        
+    }
+    
+    public override var isHighlighted: Bool {
+        
+        didSet {
+            
+            backgroundColor =   isHighlighted
+                                ? bgColors.highlighted
+                                : bgColors.normal
+            
+        }
         
     }
     
