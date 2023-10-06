@@ -17,6 +17,8 @@ public typealias KeyDefinition = (title: String,
 public class APNFlexKeypadButton: UIButton {
     
     /// Enum specifying the purpose and therefore behavior of an APNFlexKeypadButton.
+    /// 
+    /// # Example #
     /// ```swift
     /// .singleValue            // overwrites any stored or accumulated or previous singleValue.
     /// .accumulator            // button's cause their values to accumulate or be concatentated.
