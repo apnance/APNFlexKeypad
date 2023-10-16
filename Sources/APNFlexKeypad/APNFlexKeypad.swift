@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Entry point is build(withConfigs: buttonStyler:))
 public class APNFlexKeypad: UIView {
     
     // MARK: - Setup
@@ -14,7 +15,7 @@ public class APNFlexKeypad: UIView {
     public private(set) var id      = "Unspecified"
     public private(set) var value   = ""
     public private(set) var isShown = true
-    private var keyButtons = [APNFlexKeypadButton]()
+    private var keyButtons          = [APNFlexKeypadButton]()
     
     /// Call `build(withConfigs:)` in viewDidLoad of containing `UIViewController`
     /// - Parameters:
@@ -39,7 +40,9 @@ public class APNFlexKeypad: UIView {
                 let button  = APNFlexKeypadButton(frame: view.frame,
                                                   key: key)
                 
-                button.addTarget(self, action: #selector(keyPress(sender:)), for: .touchUpInside)
+                button.addTarget(self, 
+                                 action: #selector(keyPress(sender:)),
+                                 for: .touchUpInside)
                 button.setTitleColor(key.textColor, for: .normal)
                 buttonStyler?(button)
                 
@@ -52,7 +55,6 @@ public class APNFlexKeypad: UIView {
         }
         
     }
-    
     
     /// Reconciles tags that should have buttons against button definitions in configs.
     /// - Parameter configs: config object controlling rendered button properties.
