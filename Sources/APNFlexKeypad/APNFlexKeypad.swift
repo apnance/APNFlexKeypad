@@ -144,17 +144,16 @@ public class APNFlexKeypad: UIView {
         
     }
     
-    /// Sets button background color to `APNflexKeyPadButton.bgColor.highlighted`
-    /// for button(s) with `backingValue` == argument.
+    /// Sets `backgroundColor` to `normal` for all `keyButtons` except `keyButton` with index of `buttonNum`
     ///
     /// - note: this  is useful for creating custom radio button controls and other custom control types.
-    public func highlightButtonWith(backingValue: String) {
+    public func highlight(buttonNum: Int) {
         
         DispatchQueue.main.async {
             
-            for button in self.keyButtons {
+            for (num, button) in self.keyButtons.enumerated() {
                 
-                button.backgroundColor  =   (button.backingValue == backingValue)
+                button.backgroundColor  =   (num == buttonNum)
                                             ? button.bgColors.highlighted
                                             : button.bgColors.normal
                 
