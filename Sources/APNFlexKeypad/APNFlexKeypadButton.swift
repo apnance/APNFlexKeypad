@@ -9,9 +9,8 @@ import UIKit
 
 public typealias KeyDefinition = (title: String,
                                   function: APNFlexKeypadButton.ButtonFunction,
-                                  textColor: UIColor,
-                                  normalBgColor: UIColor,
-                                  hightlightBgColor: UIColor,
+                                  colors: (tx: UIColor, bg: UIColor, hi: UIColor),
+                                  font: UIFont?,
                                   hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle?)
 
 public class APNFlexKeypadButton: UIButton {
@@ -74,11 +73,10 @@ public class APNFlexKeypadButton: UIButton {
         function            = key.function
         backingValue        = function.accValue() ?? backingValue
         hapticStyle         = key.hapticStyle
-        bgColors            = (key.normalBgColor, key.hightlightBgColor)
+        bgColors            = (key.colors.bg, key.colors.hi)
         
         layer.cornerRadius  = min(frame.width, frame.height) / 2.0
         
-        titleLabel?.font = UIFont(name: "Futura-Bold", size: 20.0)
         titleLabel?.minimumScaleFactor = 0.001
         titleLabel?.adjustsFontSizeToFitWidth = true
         setTitleColor(.systemBlue, for: .normal)

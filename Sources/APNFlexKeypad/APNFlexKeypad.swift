@@ -43,7 +43,10 @@ public class APNFlexKeypad: UIView {
                 button.addTarget(self, 
                                  action: #selector(keyPress(sender:)),
                                  for: .touchUpInside)
-                button.setTitleColor(key.textColor, for: .normal)
+                
+                button.setTitleColor(key.colors.tx, for: .normal)
+                button.titleLabel?.font = key.font ?? configs.defaultFont
+                
                 buttonStyler?(button)
                 
                 view.removeFromSuperview()
