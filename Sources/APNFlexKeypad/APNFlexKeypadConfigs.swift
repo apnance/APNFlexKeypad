@@ -5,7 +5,7 @@
 //  Created by Aaron Nance on 8/18/23.
 //
 
-import Foundation
+import UIKit
 
 /// Object used to specify various properties of `APNFlexpad` rendered buttons.
 public struct APNFlexKeypadConfigs {
@@ -13,6 +13,9 @@ public struct APNFlexKeypadConfigs {
     /// Used to uniquely identify the configured flexpad when the delegate is
     /// working with two or more flexpads.
     let id: String
+    
+    /// Default font used for keypad button titles.
+    private(set) var defaultFont: UIFont
     
     /// Specify the properties for each button.  The key value should map directly
     /// to a corresponding tag value on a placeholder UIView in IB.
@@ -31,10 +34,12 @@ public struct APNFlexKeypadConfigs {
     ///   - keys: maps key properties to rendered keys
     public init(id: String,
                 delegate: APNFlexKeypadDelegate,
+                defaultFont: UIFont? = nil,
                 keys: [ Int : KeyDefinition ]) {
         
         self.id             = id
         self.delegate       = delegate
+        self.defaultFont    = defaultFont ?? UIFont(name: "Verdana", size: 12.0)!
         self.keyDefinitions = keys
         
     }
